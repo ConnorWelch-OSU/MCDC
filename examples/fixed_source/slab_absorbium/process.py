@@ -7,18 +7,16 @@ from reference import reference
 
 # Load results
 with h5py.File("output.h5", "r") as f:
-    z = f["tally/grid/z"][:]
+    z = f["tally/grid/x"][:]
     dz = z[1:] - z[:-1]
     z_mid = 0.5 * (z[:-1] + z[1:])
 
-    mu = f["tally/grid/mu"][:]
+    mu = f["tally/grid/E"][:]
     dmu = mu[1:] - mu[:-1]
     mu_mid = 0.5 * (mu[:-1] + mu[1:])
 
     psi = f["tally/flux/mean"][:]
     psi_sd = f["tally/flux/sdev"][:]
-    J = f["tally/current/mean"][:, 2]
-    J_sd = f["tally/current/sdev"][:, 2]
 
 I = len(z) - 1
 N = len(mu) - 1
@@ -33,8 +31,6 @@ for i in range(I):
 # Normalize
 phi /= dz
 phi_sd /= dz
-J /= dz
-J_sd /= dz
 for n in range(N):
     psi[:, n] = psi[:, n] / dz / dmu[n]
     psi_sd[:, n] = psi_sd[:, n] / dz / dmu[n]

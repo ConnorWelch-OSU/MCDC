@@ -2881,6 +2881,12 @@ def scattering(P, prog):
         # Sample scattering phase space
         sample_phasespace_scattering(P, material, P_new, mcdc)
 
+        #print(P_new["E"])
+        
+        # Set Lower Energy Bound for RMC
+        if P_new["E"] < 1:
+            continue
+
         # Bank, but keep it if it is the last particle
         if n == N - 1:
             P["alive"] = True

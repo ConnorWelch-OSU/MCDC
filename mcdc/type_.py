@@ -624,7 +624,10 @@ def make_type_source(input_deck):
     if mode_CE:
         G = 1
         # Maximum number of data point in energy pdf
-        Nmax_E = max([source.energy.shape[1] for source in input_deck.sources])
+        # commented out to make source particle bank work
+        #Nmax_E = max([source.energy.shape[1] for source in input_deck.sources])
+        Nmax_E = 1
+        #print("Nmax_E=", Nmax_E)
     if mode_MG:
         G = input_deck.materials[0].G
         Nmax_E = 2

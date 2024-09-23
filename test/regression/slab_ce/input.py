@@ -2,6 +2,8 @@ import numpy as np
 import os, h5py
 from mpi4py import MPI
 
+import sys
+sys.path.append('C:/Users/conno/MCDC')
 import mcdc
 
 
@@ -14,15 +16,15 @@ if MPI.COMM_WORLD.Get_rank() == 0:
         f["A"] = 1.0
 
         f["E_xs"] = np.array([0.0, 1.0 - 1e-6, 1.0 + 1e-6, 2e7])
-        f["capture"] = np.array([0.01344, 0.01344, 0.00384, 0.00384])
-        f["fission"] = np.array([0.06912, 0.06912, 0.00619, 0.00619])
-        f["scatter"] = np.array([0.26304, 0.26304, 0.15024, 0.15024])
+        f["capture"] = np.array([0.0, 0.0, 0.0, 0.0])
+        f["fission"] = np.array([0.0, 0.0, 0.0, 0.0])
+        f["scatter"] = np.array([1.0, 1.0, 1.0, 1.0])
 
-        f["E_nu_p"] = np.array([0.0, 1.0 - 1e-6, 1.0 + 1e-6, 2e7])
-        f["nu_p"] = np.array([2.5, 2.5, 2.7, 2.7])
+        f["E_nu_p"] = np.array([0.0, 0.0, 0.0, 0.0])
+        f["nu_p"] = np.array([0.0, 0.0, 0.0, 0.0])
 
-        f["E_chi_p"] = np.array([0.0, 1e5, 2e7])
-        f["chi_p"] = np.array([0.0, 0.0, 1.0])
+        f["E_chi_p"] = np.array([0.0, 0.0, 0.0])
+        f["chi_p"] = np.array([0.0, 0.0, 0.0])
 
         f["decay_rate"] = np.zeros(6)
 
@@ -52,7 +54,7 @@ dummy_material = mcdc.material(
 
 # Set surfaces
 s1 = mcdc.surface("plane-x", x=0.0, bc="reflective")
-s2 = mcdc.surface("plane-x", x=2.0, bc="vacuum")
+s2 = mcdc.surface("plane-x", x=2.0, bc="reflective")
 
 # Set cells
 mcdc.cell(+s1 & -s2, dummy_material)
@@ -63,13 +65,14 @@ mcdc.cell(+s1 & -s2, dummy_material)
 
 mcdc.source(
     x=[0.95, 1.05],
-    energy=np.array([[0.9, 1.1], [1.0, 1.0]]),
+    energy=np.array([[20e6, 20e6 + 1], [1.0, 1.0]]),
 )
 
 # =============================================================================
 # Set tally, setting, and run mcdc
 # =============================================================================
 
-mcdc.tally(scores=["flux"], x=np.linspace(0.0, 2.0, 21), E=np.array([0.0, 1.0, 20e6]))
-mcdc.setting(N_particle=1e3)
+mcdc.tally(scores=["flux"], E=np.logspace(0.0, 6.0, 100))
+#mcdc.tally(scores=["flux"], E=np.linspace(0.0, 1e3, 1000))
+mcdc.setting(N_particle=1e3) 
 mcdc.run()

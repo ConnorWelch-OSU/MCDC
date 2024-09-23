@@ -1,5 +1,7 @@
 import numpy as np
 
+import sys
+sys.path.append('C:/Users/conno/MCDC')
 import mcdc
 
 # =============================================================================
